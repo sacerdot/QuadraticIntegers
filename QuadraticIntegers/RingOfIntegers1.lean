@@ -24,7 +24,7 @@ For all rational $r$, we have $r^2 \neq d$, so $K$ is a field.
 PROVIDED SOLUTION:
 Clear since we assume that $d$ is squarefree.
 -/
-instance field : Fact (∀ (r : ℚ), r ^2 ≠ d + 0 * r) := by
+instance field : Fact (∀ (r : ℚ), r^2 ≠ d + 0 * r) := by
  constructor
  intro r h
  rw [zero_mul, add_zero] at h
@@ -40,7 +40,6 @@ instance field : Fact (∀ (r : ℚ), r ^2 ≠ d + 0 * r) := by
  have step3 := alt.prop
  rw [hs] at step3
  simp only [isUnit_one, Int.natAbs_of_isUnit, Nat.not_ofNat_le_one] at step3
-
 
 
 /--
@@ -66,13 +65,14 @@ PROVIDED SOLUTION:
 Clear since $\sqrt{d}$ is a root of $x^2-d$.
 -/
 lemma easy_incl : IsIntegral ℤ (algebraMap R K ω) := by
-  sorry
+  apply IsIntegral.algebraMap
+  exact IsIntegral.isIntegral ω
 
 section trace_and_norm
 
 variable {a b : ℚ}
 
-local notation3 "z" => a + b • (ω : K)
+local notation "z" => a + b • (ω : K)
 
 /--
 We have that $z \in \Q$ if and only if $b = 0$.
@@ -81,7 +81,28 @@ PROVIDED SOLUTION:
 Clear.
 -/
 lemma rational_iff : z ∈ range (algebraMap ℚ K) ↔ b = 0 := by
-  sorry
+  constructor
+  · intro ⟨q, hq⟩
+    by_contra hb_notzero
+    have : (b: K) ≠ 0 := by exact_mod_cast hb_notzero
+    have foo : d = ((q - a)/b)^2 := by
+        apply (algebraMap ℚ K).injective
+        simp
+        calc (d: K) = b^2 * (d / b^2)  := by field_simp
+              _ = b ^ 2 * (((ω: K) * (ω : K)) / b ^ 2) := by
+                  congr
+                  simp [omega_mul_omega_eq_add, Int.cast_smul_eq_zsmul]
+              _ = (b * (ω: K) / b)^2 := by field_simp
+              _ = ((a + b * (ω: K) - a) / ↑b) ^ 2 := by ring
+              _ = ((a + b • (ω : K) - ↑a) / (b: K)) ^ 2 := by
+
+
+              _ = ((↑q - ↑a) / ↑b) ^ 2 := by rw [<- hq] ; simp
+
+
+      -- _ = (ω: K) * ω  := rfl
+    sorry
+  · simp +contextual
 
 /--
 If $b \neq 0$ then the minimal polynomial of $z$ over $\Q$ is $$X^2-2aX+(a^2-db^2)$$.
