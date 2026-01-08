@@ -1,3 +1,2 @@
-import QuadraticIntegers.Mathlib.QuadraticAlgebra
-import QuadraticIntegers.Mathlib.Squarefree
+import QuadraticIntegers.Mathlib.Algebra.QuadraticAlgebra.Instances
 import QuadraticIntegers.RingOfIntegers
